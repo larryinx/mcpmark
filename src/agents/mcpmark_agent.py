@@ -9,6 +9,7 @@ import asyncio
 import json
 import time
 from typing import Any, Dict, List, Optional, Callable
+from pydantic import AnyUrl
 
 from pathlib import Path
 import httpx
@@ -27,6 +28,16 @@ litellm.suppress_debug_info = True
 
 logger = get_logger(__name__)
 
+
+# To fix the "Object of type AnyUrl is not JSON serializable" error in the find_file_contents function.
+class CustomJSONEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, AnyUrl):
+            return str(obj)  
+        return super().default(obj)  
+
+        
+        
 class MCPMarkAgent(BaseMCPAgent):
     """
     Unified agent for LLM and MCP server management using LiteLLM.
@@ -426,7 +437,7 @@ class MCPMarkAgent(BaseMCPAgent):
                     tool_results.append({
                         "type": "tool_result",
                         "tool_use_id": tu["id"],
-                        "content": [{"type": "text", "text": json.dumps(result)}],
+                        "content": [{"type": "text", "text": json.dumps(result, cls=CustomJSONEncoder)}],
                     })
                 except Exception as e:
                     logger.error(f"Tool call failed: {e}")
@@ -684,7 +695,7 @@ class MCPMarkAgent(BaseMCPAgent):
                             messages.append({
                                 "role": "tool",
                                 "tool_call_id": tool_call.id,
-                                "content": json.dumps(result)
+                                "content": json.dumps(result, cls=CustomJSONEncoder)
                             })
                         except asyncio.TimeoutError:
                             error_msg = f"Tool call '{func_name}' timed out after 60 seconds"
