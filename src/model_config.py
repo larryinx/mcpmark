@@ -161,7 +161,20 @@ class ModelConfig:
             "provider": "zhipu",
             "api_key_var": "OPENROUTER_API_KEY",
             "litellm_input_model_name": "openrouter/z-ai/glm-4.5",
-        }
+        },
+        # Local models
+        "qwen-3-coder": {
+            "provider": "openai",
+            "api_key_var": "LOCAL_API_KEY",
+            "base_url_var": "LOCAL_BASE_URL",
+            "litellm_input_model_name": "openai//scratch/yinx/custom_models/Qwen3-Coder-30B-A3B-Instruct",
+        },
+        "qwen-3-coder-1": {
+            "provider": "openai",
+            "api_key_var": "LOCAL_API_KEY",
+            "base_url_var": "LOCAL_BASE_URL",
+            "litellm_input_model_name": "openai//home/y3395li/models/Qwen3-Coder-30B-A3B-Instruct",
+        },
     }
 
     def __init__(self, model_name: str):

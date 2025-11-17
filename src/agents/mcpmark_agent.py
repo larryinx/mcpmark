@@ -10,6 +10,7 @@ import json
 import time
 from typing import Any, Dict, List, Optional, Callable
 
+from pathlib import Path
 import httpx
 import litellm
 import nest_asyncio
@@ -62,6 +63,10 @@ class MCPMarkAgent(BaseMCPAgent):
             service_config_provider=service_config_provider,
             reasoning_effort=reasoning_effort,
         )
+        # Register local models
+        path_to_model_registry = Path("./src/config/model_registry.json")
+        if path_to_model_registry.is_file():
+            litellm.utils.register_model(json.loads(path_to_model_registry.read_text()))
         logger.debug(
             "Initialized MCPMarkAgent for '%s' with model '%s' (Claude: %s, Thinking: %s, Reasoning: %s)",
             mcp_service,
