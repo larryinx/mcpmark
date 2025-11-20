@@ -563,6 +563,7 @@ class MCPMarkAgent(BaseMCPAgent):
             {"role": "user", "content": instruction}
         ]
         total_tokens = {"input_tokens": 0, "output_tokens": 0, "total_tokens": 0, "reasoning_tokens": 0}
+        message_tokens = {"input_tokens": 0, "output_tokens": 0, "total_tokens": 0, "reasoning_tokens": 0}
         turn_count = 0
         max_turns = self.MAX_TURNS  # Limit turns to prevent infinite loops
         consecutive_failures = 0
@@ -589,6 +590,10 @@ class MCPMarkAgent(BaseMCPAgent):
 
         # Record initial state
         self._update_progress(messages, total_tokens, turn_count)
+
+        # Output tools to a json file
+        with open(f"./{self.mcp_service}_tools.json", "w") as f:
+            json.dump(tools, f, cls=CustomJSONEncoder, indent=2)
         
         try:
             while turn_count < max_turns:
@@ -653,11 +658,16 @@ class MCPMarkAgent(BaseMCPAgent):
                     total_tokens["output_tokens"] += output_tokens
                     total_tokens["total_tokens"] += total_tokens_count
                     
+                    message_tokens["input_tokens"] = input_tokens
+                    message_tokens["output_tokens"] = output_tokens
+                    message_tokens["total_tokens"] = total_tokens_count
+                    
                     # Extract reasoning tokens if available
                     if hasattr(response.usage, 'completion_tokens_details'):
                         details = response.usage.completion_tokens_details
                         if hasattr(details, 'reasoning_tokens'):
                             total_tokens["reasoning_tokens"] += details.reasoning_tokens or 0
+                            message_tokens["reasoning_tokens"] = details.reasoning_tokens or 0
                 
                 # Get response message
                 choices = response.choices
