@@ -592,7 +592,7 @@ class MCPMarkAgent(BaseMCPAgent):
         self._update_progress(messages, total_tokens, turn_count)
 
         # Output tools to a json file
-        with open(f"./{self.mcp_service}_tools.json", "w") as f:
+        with open(f"./tools_logs/{self.mcp_service}_tools.json", "w") as f:
             json.dump(tools, f, cls=CustomJSONEncoder, indent=2)
         
         try:
