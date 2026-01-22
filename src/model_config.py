@@ -78,7 +78,7 @@ class ModelConfig:
         "gpt-oss-120b": {
             "provider": "openai",
             "api_key_var": "OPENROUTER_API_KEY",
-            "litellm_input_model_name": "openrouter/openai/gpt-oss-120b",
+            "litellm_input_model_name": "openrouter/openai/gpt-oss-120b:free",
         },
         # DeepSeek models
         "deepseek-v3.2-instruct": {
@@ -181,6 +181,12 @@ class ModelConfig:
             "provider": "zhipu",
             "api_key_var": "OPENROUTER_API_KEY",
             "litellm_input_model_name": "openrouter/z-ai/glm-4.5",
+        },
+        "fg": {
+            "provider": "openai",
+            "api_key_var": "LOCAL_API_KEY",
+            "base_url_var": "LOCAL_BASE_URL",
+            "litellm_input_model_name": "functiongemma-270m-it",
         }
     }
 
